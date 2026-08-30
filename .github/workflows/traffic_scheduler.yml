@@ -1,0 +1,32 @@
+name: Daily Traffic & CCTV WhatsApp Bot
+
+on:
+  schedule:
+    # 00:40 UTC = 07:40 WIB (Senin s/d Jumat)
+    - cron: '40 0 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  run-traffic-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Traffic & CCTV Job
+        env:
+          TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
+          FONNTE_TOKEN: ${{ secrets.FONNTE_TOKEN }}
+          TARGET_WHATSAPP_NUMBER: ${{ secrets.TARGET_WHATSAPP_NUMBER }}
+        run: |
+          python -c "import traffic_cctv_bot; traffic_cctv_bot.run_traffic_job()"

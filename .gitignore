@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+cctv_snapshot.jpg
+.env
+setup_workflow.py
