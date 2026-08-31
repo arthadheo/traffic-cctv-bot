@@ -1,9 +1,17 @@
 import time
 import os
 import re
+from datetime import datetime, timezone, timedelta
 import cv2
 import requests
 import schedule
+
+# Zona waktu Indonesia Barat (UTC+7)
+WIB = timezone(timedelta(hours=7))
+
+def get_current_wib_str():
+    """Mengembalikan tanggal dan jam WIB aktual secara presisi."""
+    return datetime.now(WIB).strftime("%d/%m/%Y %H:%M WIB")
 
 # ================= KREDENSIAL & KONFIGURASI =================
 TOMTOM_API_KEY = os.getenv("TOMTOM_API_KEY", "B1KiF1M0oI5zMhHbFaA4MKAqsOTng8BU")
@@ -175,7 +183,7 @@ def send_whatsapp_alert(target_phone, message, fonnte_token):
 
 # ================= 4. PIPELINE ORKESTRASI =================
 def run_traffic_job():
-    now_str = time.strftime("%d/%m/%Y %H:%M WIB")
+    now_str = get_current_wib_str()
     print(f"\n[+] [{now_str}] Memulai pengecekan rute dan traffic...")
     
     routes = get_traffic_summary(ORIGIN, DESTINATION, TOMTOM_API_KEY)
